@@ -1,0 +1,648 @@
+/* css/style.css */
+
+/* --- Global Styles & Resets --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth; /* Cho phép cuộn mượt khi dùng #link */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* Font hệ thống phổ biến */
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa; /* Màu nền chung hơi xám */
+    font-size: 16px; /* Kích thước font cơ bản */
+}
+
+.container {
+    max-width: 1200px; /* Giới hạn chiều rộng nội dung */
+    margin: 0 auto; /* Căn giữa container */
+    padding: 0 15px; /* Khoảng đệm hai bên trên màn hình nhỏ */
+}
+
+a {
+    text-decoration: none;
+    color: #007bff; /* Màu link chính - xanh dương */
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #0056b3; /* Màu link đậm hơn khi hover */
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto; /* Giữ tỷ lệ khung hình */
+    display: block; /* Loại bỏ khoảng trắng dưới ảnh */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 1rem;
+    line-height: 1.3;
+    color: #343a40; /* Màu tiêu đề đậm hơn */
+    font-weight: 600; /* Đậm vừa phải */
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; text-align: center; margin-bottom: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+
+section {
+    padding: 60px 0;
+}
+
+/* --- Buttons --- */
+.btn {
+    display: inline-block;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    text-align: center;
+    text-decoration: none; /* Đảm bảo nút <a> không có gạch chân */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn:hover {
+     transform: translateY(-2px);
+     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    color: #ffff;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    color: #ffff;
+}
+
+.btn-sm { /* Class cho nút nhỏ hơn */
+    padding: 6px 12px;
+    font-size: 0.875rem;
+}
+img.logo-img {
+    width: auto;
+    height: 80px;
+}
+/* --- Header --- */
+.header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Đảm bảo header luôn ở trên */
+    width: 100%;
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo h1 {
+    margin-bottom: 0; /* Reset margin cho logo h1 */
+}
+
+.logo h1 a {
+    color: #343a40;
+    font-size: 1.8rem;
+    font-weight: 700; /* Đậm hơn */
+}
+
+.logo h1 a:hover {
+    color: #007bff; /* Đổi màu khi hover logo */
+}
+
+.main-nav ul {
+    display: flex;
+}
+
+.main-nav ul li {
+    margin-left: 30px; /* Khoảng cách giữa các mục menu */
+}
+
+.main-nav ul li a {
+    color: #495057; /* Màu chữ menu hơi xám */
+    font-weight: 500;
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent; /* Tạo đường gạch chân ẩn */
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.main-nav ul li a:hover,
+.main-nav ul li a.active { /* Style cho mục active hoặc khi hover */
+    color: #007bff;
+    border-bottom-color: #007bff;
+}
+
+/* --- Hero Section --- */
+.hero {
+    height: 91vh; /* Chiều cao tương đối */
+    min-height: 400px; /* Chiều cao tối thiểu */
+    background: url('/images/hero-bg.jpg') no-repeat center center / cover;
+    background-attachment: fixed;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    padding: 0; /* Ghi đè padding section */
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.55); /* Lớp phủ tối hơn chút */
+    z-index: 1;
+}
+
+.hero-content {
+    position: fixed;
+    z-index: 1;
+    max-width: 800px; /* Giới hạn chiều rộng nội dung hero */
+}
+
+.hero h2 {
+    font-size: clamp(2rem, 5vw, 3rem); /* Kích thước chữ linh hoạt */
+    margin-bottom: 1rem;
+    color: #fff;
+    font-weight: 700;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.hero p {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* --- Booking Form Section --- */
+.booking-form-section {
+    background-color: #ffffff; /* Nền trắng để form nổi bật */
+     box-shadow: 0 -2px 5px rgba(0,0,0,0.05); /* Bóng nhẹ ở phía trên */
+     margin-top: -50px; /* Kéo form lên đè lên hero một chút */
+     position: relative; /* Để z-index hoạt động */
+     z-index: 10;
+     padding-top: 40px; /* Tăng padding top */
+     padding-bottom: 40px;
+     border-radius: 8px 8px 0 0; /* Bo góc trên */
+}
+
+.booking-form-section h2 {
+    margin-bottom: 2rem;
+}
+
+#quick-search-form {
+    display: grid; /* Sử dụng grid để căn chỉnh tốt hơn */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Các cột tự động điều chỉnh */
+    gap: 20px; /* Khoảng cách giữa các input */
+    align-items: end; /* Căn các phần tử xuống dưới cùng */
+    background-color: #f8f9fa; /* Nền form hơi xám */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    max-width: 950px; /* Tăng max-width một chút */
+    margin: 0 auto; /* Căn giữa form */
+}
+
+/* Căn chỉnh button Tìm Kiếm */
+#quick-search-form button {
+   grid-column: span 1; /* Mặc định chiếm 1 cột */
+   /* Sẽ điều chỉnh ở media query */
+}
+
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.form-group input[type="date"],
+.form-group input[type="number"] {
+    padding: 12px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%; /* Chiếm hết chiều rộng cột grid */
+    background-color: #fff; /* Nền trắng cho input */
+}
+
+.form-group input[type="number"] {
+    -moz-appearance: textfield; /* Ẩn mũi tên tăng giảm trên Firefox */
+}
+.form-group input[type="number"]::-webkit-outer-spin-button,
+.form-group input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Ẩn mũi tên tăng giảm trên Chrome/Safari */
+    margin: 0;
+}
+
+
+.form-message { /* Style này được thêm bởi JS, đây là style cơ bản */
+    /* Các style khác sẽ được thêm bởi hàm showFormMessage trong JS */
+}
+
+
+/* --- Featured Rooms Section --- */
+.featured-rooms {
+    background-color: #f8f9fa;
+    z-index: 10;
+    position: relative;
+}
+
+.room-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Grid linh hoạt */
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.room-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Bóng nhẹ hơn */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex; /* Sử dụng flexbox cho card */
+    flex-direction: column; /* Sắp xếp nội dung theo chiều dọc */
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.room-card img {
+    width: 100%;
+    height: 220px; /* Chiều cao ảnh cố định */
+    object-fit: cover; /* Đảm bảo ảnh đầy đủ khung hình */
+}
+
+.room-info {
+    padding: 20px;
+    flex-grow: 1; /* Cho phép phần info co giãn */
+    display: flex;
+    flex-direction: column; /* Sắp xếp nội dung trong info */
+}
+
+.room-info h3 {
+    margin-bottom: 0.8rem;
+    color: #343a40;
+    font-size: 1.25rem;
+}
+
+.room-info p {
+    margin-bottom: 1rem;
+    color: #6c757d;
+    font-size: 0.95rem;
+    flex-grow: 1; /* Đẩy giá và nút xuống dưới */
+}
+
+.room-price {
+    font-size: 1.1rem !important;
+    color: #007bff !important;
+    margin-top: auto !important; /* Đẩy giá xuống cuối */
+    margin-bottom: 15px !important;
+}
+
+.room-price strong {
+    font-weight: 700; /* Giá đậm hơn */
+}
+
+.room-info .btn {
+    margin-top: auto; /* Đảm bảo nút luôn ở dưới cùng */
+    width: 100%;
+}
+
+/* Icon tiện nghi trong kết quả tìm kiếm (dùng sau) */
+.room-amenities {
+    margin-bottom: 15px !important;
+    flex-grow: 0 !important; /* Không cho phần tiện nghi chiếm không gian thừa */
+}
+.room-amenities i {
+    margin-right: 8px;
+    color: #6c757d;
+    font-size: 1.1em;
+    transition: color 0.2s ease;
+}
+.room-amenities i:hover {
+    color: #007bff; /* Đổi màu icon khi hover */
+}
+
+/* Actions trong kết quả tìm kiếm (dùng sau) */
+.room-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.room-actions .btn {
+    flex: 1;
+}
+
+
+/* --- About Intro Section --- */
+.about-intro {
+    background-color: #ffffff; /* Nền trắng */
+    text-align: center;
+    position: relative;
+    z-index: 10;
+}
+select#available-room-select {
+    width: 100%;
+    height: 35px;
+    border-radius: 5px;
+}
+.about-intro p {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1.5rem;
+    color: #555;
+}
+
+/* --- Contact & Location Section --- */
+.contact-location {
+    background-color: #e9ecef; /* Nền xám nhạt */
+    position: relative;
+    z-index: 10;
+}
+.contact-details {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.contact-details p {
+     margin-bottom: 10px;
+     font-size: 1.1rem;
+}
+.contact-details strong {
+     color: #333;
+     margin-right: 5px;
+}
+
+.map-placeholder {
+    height: 400px;
+    background-color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    overflow: hidden; /* Đảm bảo iframe vừa khít */
+     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.map-placeholder iframe {
+    border: none;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Footer --- */
+.footer {
+    background-color: #343a40;
+    color: #f8f9fa;
+    text-align: center;
+    padding: 30px 0;
+    margin-top: 40px; /* Khoảng cách với phần tử cuối cùng */
+}
+
+/* --- Search Results Page Specific Styles (dùng sau) --- */
+.search-results-section {
+    background-color: #ffffff;
+    padding-bottom: 60px; /* Thêm padding bottom */
+}
+
+.search-criteria {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 15px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    display: flex; /* Flexbox để căn chỉnh */
+    justify-content: center; /* Căn giữa */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    flex-wrap: wrap; /* Xuống dòng nếu không đủ chỗ */
+    gap: 15px; /* Khoảng cách giữa text và nút */
+}
+.search-criteria p {
+    margin-bottom: 0; /* Bỏ margin bottom */
+    font-size: 1.1em;
+    color: #495057;
+}
+.search-criteria span {
+    font-weight: 600; /* Làm đậm thông tin tìm kiếm */
+    color: #343a40;
+}
+
+/* --- Modal Styles (dùng sau) --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    padding-top: 60px;
+    animation: fadeIn 0.3s ease-out; /* Animation khi mở */
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto; /* Thêm margin bottom */
+    padding: 30px 40px; /* Tăng padding */
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+     box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+     animation: slideIn 0.4s ease-out; /* Animation khi mở */
+}
+
+@keyframes slideIn {
+    from {transform: translateY(-30px); opacity: 0;}
+    to {transform: translateY(0); opacity: 1;}
+}
+
+.close-btn {
+    color: #aaa;
+    position: absolute;
+    top: 15px; /* Điều chỉnh vị trí */
+    right: 25px;
+    font-size: 32px; /* Tăng kích thước */
+    font-weight: bold;
+    line-height: 1;
+}
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.modal h2 {
+    text-align: left; /* Căn trái tiêu đề modal */
+    margin-bottom: 1.5rem;
+}
+#modal-search-form .form-group {
+    margin-bottom: 20px; /* Tăng khoảng cách */
+}
+#modal-search-form label {
+    display: block;
+    margin-bottom: 8px; /* Tăng khoảng cách label */
+    font-weight: 500;
+}
+#modal-search-form input[type="date"],
+#modal-search-form input[type="number"] {
+    width: 100%;
+    padding: 12px; /* Tăng padding input */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+#modal-search-form button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px 20px; /* Tăng padding button */
+}
+
+/* --- Responsive --- */
+@media (max-width: 992px) {
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.8rem; }
+    h3 { font-size: 1.4rem; }
+
+    /* Cho form tìm kiếm trên tablet */
+     #quick-search-form {
+        grid-template-columns: repeat(2, 1fr); /* Chia thành 2 cột */
+    }
+     #quick-search-form .form-group {
+        grid-column: span 1; /* Mỗi group 1 cột */
+    }
+     #quick-search-form button {
+         grid-column: span 2; /* Button chiếm hết 2 cột */
+         margin-top: 10px; /* Thêm khoảng cách trên button */
+     }
+}
+
+@media (max-width: 768px) {
+    .header .container {
+        flex-direction: column; /* Logo trên, menu dưới */
+        align-items: center;
+    }
+    .main-nav {
+        margin-top: 15px;
+    }
+    .main-nav ul {
+        justify-content: center; /* Căn giữa menu */
+        flex-wrap: wrap; /* Cho phép menu xuống dòng */
+        gap: 10px 20px; /* Khoảng cách giữa các mục menu */
+    }
+     .main-nav ul li {
+        margin-left: 0; /* Bỏ margin trái */
+    }
+
+    .hero {
+        height: 55vh;
+    }
+    .hero h2 {
+        font-size: clamp(1.8rem, 6vw, 2.5rem);
+    }
+    .hero p {
+         font-size: clamp(0.9rem, 3vw, 1.1rem);
+    }
+    section {
+        padding: 40px 0;
+    }
+
+    /* Cho form tìm kiếm trên mobile */
+     #quick-search-form {
+        grid-template-columns: 1fr; /* 1 cột duy nhất */
+        gap: 15px;
+    }
+     #quick-search-form .form-group,
+     #quick-search-form button {
+         grid-column: span 1; /* Mỗi phần tử chiếm 1 cột */
+     }
+      #quick-search-form button {
+         margin-top: 5px;
+     }
+
+    .room-card img {
+        height: 200px;
+    }
+     .modal-content {
+        width: 95%;
+        padding: 25px;
+     }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 0 10px; /* Giảm padding container */
+    }
+     .main-nav ul li a {
+         padding: 8px 10px; /* Tăng vùng click cho menu */
+         border-bottom-width: 0; /* Bỏ gạch chân trên mobile */
+     }
+     .main-nav ul li a:hover,
+     .main-nav ul li a.active {
+         background-color: #e9ecef; /* Highlight nền khi hover/active */
+         border-radius: 4px;
+         color: #0056b3;
+         border-bottom-color: transparent;
+     }
+     .btn {
+        padding: 12px 20px; /* Tăng padding nút trên mobile */
+        font-size: 0.95rem;
+     }
+      .btn-sm {
+         padding: 8px 14px;
+         font-size: 0.85rem;
+     }
+
+}

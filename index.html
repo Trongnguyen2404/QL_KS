@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khách sạn Hoàng Gia - Đặt phòng trực tuyến</title>
+    <!-- Link đến file CSS -->
+    <link rel="stylesheet" href="./css/style.css">
+    <!-- (Optional) Link đến Font Awesome để hiển thị icon tiện nghi -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html"><img class="logo-img" src="./images/logo.png"></a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html" class="active">Trang Chủ</a></li>
+                    <!-- Sửa link để trỏ đến trang tìm kiếm thay vì chỉ cuộn -->
+                    <li><a href="search-results.html">Tìm Phòng</a></li>
+                    <li><a href="#about">Giới Thiệu</a></li>
+                    <li><a href="#contact">Liên Hệ</a></li>
+                    <!-- <li><a href="#">Đăng Nhập</a></li> -->
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section (Giữ nguyên) -->
+        <section class="hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-content container">
+                <h2>Chào mừng đến với Khách sạn SleepWell</h2>
+                <p>Nơi nghỉ dưỡng lý tưởng với dịch vụ đẳng cấp và tiện nghi hiện đại.</p>
+                <a href="#quick-booking-form" class="btn btn-primary">Đặt Phòng Ngay</a>
+            </div>
+        </section>
+
+        <!-- Quick Booking Form Section (Giữ nguyên cấu trúc HTML) -->
+        <section id="quick-booking-form" class="booking-form-section">
+            <div class="container">
+                <h2>Tìm Phòng Nhanh</h2>
+                <form id="quick-search-form">
+                    <div class="form-group">
+                        <label for="checkin-date">Ngày nhận phòng:</label>
+                        <input type="date" id="checkin-date" name="checkin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkout-date">Ngày trả phòng:</label>
+                        <input type="date" id="checkout-date" name="checkout" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="guests">Số lượng khách:</label>
+                        <input type="number" id="guests" name="guests" min="1" value="1" required> <!-- Sửa value mặc định thành 1 -->
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tìm Kiếm</button>
+                </form>
+                 <p id="form-message" class="form-message" style="display: none;"></p>
+            </div>
+        </section>
+
+        <!-- Featured Rooms Section -->
+        <section id="featured-rooms" class="featured-rooms">
+            <div class="container">
+                <h2>Phòng Nổi Bật</h2>
+                <!-- Container này sẽ được điền dữ liệu động bằng JS -->
+                <div class="room-container">
+                    <!-- Dữ liệu phòng sẽ được load vào đây bằng script.js -->
+                    <!-- Ví dụ cấu trúc HTML sẽ được tạo ra (không cần gõ lại ở đây)
+                    <div class="room-card" data-room-type-id="1">
+                        <img src="..." alt="Phòng Standard">
+                        <div class="room-info">
+                            <h3>Phòng Standard</h3>
+                            <p>Mô tả ngắn...</p>
+                            <p class="room-price">Giá từ: <strong>... VNĐ/đêm</strong></p>
+                            <a href="room-details.html?typeId=1" class="btn btn-secondary room-detail-link">Xem Chi Tiết</a>
+                        </div>
+                    </div>
+                    -->
+                     <p id="featured-loading-message">Đang tải phòng nổi bật...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Intro Section (Giữ nguyên) -->
+        <section id="about" class="about-intro">
+            <div class="container">
+                <h2>Giới Thiệu Khách Sạn Hoàng Gia</h2>
+                <p>Tọa lạc tại vị trí trung tâm, Khách sạn Hoàng Gia tự hào mang đến không gian nghỉ dưỡng sang trọng, yên tĩnh cùng chất lượng dịch vụ hoàn hảo. Với hệ thống phòng ốc đa dạng, nhà hàng ẩm thực đặc sắc, hồ bơi ngoài trời và spa thư giãn, chúng tôi cam kết đem lại những trải nghiệm đáng nhớ cho quý khách.</p>
+                <p>Các tiện nghi nổi bật bao gồm: Wifi miễn phí toàn bộ khách sạn, bãi đỗ xe riêng, dịch vụ đưa đón sân bay, quầy bar & lounge, phòng họp & sự kiện...</p>
+            </div>
+        </section>
+
+        <!-- Contact & Location Snippet (Giữ nguyên) -->
+        <section id="contact" class="contact-location">
+            <div class="container">
+                <h2>Liên Hệ & Vị Trí</h2>
+                 <div class="contact-details">
+                    <p><strong>Địa chỉ:</strong> 123 Đường ABC, Quận XYZ, Thành phố HCM</p>
+                    <p><strong>Điện thoại:</strong> <a href="tel:0123456789">0123 456 789</a></p>
+                    <p><strong>Email:</strong> <a href="mailto:info@khachsanhoanggia.com">info@khachsanhoanggia.com</a></p>
+                 </div>
+                <div class="map-placeholder">
+                     <p>Bản đồ vị trí (Google Maps)</p>
+                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.447793118297!2d106.69731371533199!3d10.77697159232088!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f3a9d9f39b7%3A0x42b31f2d74f5ad7a!2zQml0ZXhjbyBGaW5hbmNpYWwgVG93ZXIsIDIxIEjhuqNpIFRyaeG7gXUsIEPhu5FuZyBWaeG7h24gU8OgaSBHw7JuLCBUaMOgbmggcGjhu5EgSOG7kyBDaMOtIE1pbmgsIFZpZXRuYW0!5e0!3m2!1sen!2s!4v1678886655443!5m2!1sen!2s" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 Khách sạn Hoàng Gia. Bảo lưu mọi quyền.</p>
+        </div>
+    </footer>
+
+    <!-- Link đến file dữ liệu giả lập (PHẢI ĐẶT TRƯỚC script.js) -->
+    <script src="./js/data.js"></script>
+    <!-- Link đến file JavaScript chính -->
+    <script src="./js/script.js"></script>
+</body>
+</html>

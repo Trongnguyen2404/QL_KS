@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả tìm kiếm - Khách sạn Hoàng Gia</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Thêm style cho số phòng trống */
+        .availability-count {
+            font-size: 0.9em;
+            color: #28a745; /* Màu xanh lá */
+            font-weight: bold;
+            margin-top: 5px;
+            display: block; /* Hiển thị trên dòng riêng */
+        }
+         .availability-count i {
+             margin-right: 4px;
+         }
+    </style>
+</head>
+<body>
+    <!-- Header (Giữ nguyên) -->
+    <header class="header">
+       <div class="container">
+        <div class="logo">
+            <a href="index.html"><img class="logo-img" src="./images/logo.png"></a>
+        </div>
+            <nav class="main-nav">
+                 <ul>
+                     <li><a href="index.html">Trang Chủ</a></li>
+                     <li><a href="search-results.html" class="active">Tìm Phòng</a></li>
+                     <li><a href="index.html#about">Giới Thiệu</a></li>
+                     <li><a href="index.html#contact">Liên Hệ</a></li>
+                 </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="search-results-section">
+            <div class="container">
+                <h2>Kết Quả Tìm Kiếm Phòng</h2>
+
+                <!-- Hiển thị tiêu chí tìm kiếm (Giữ nguyên) -->
+                <div class="search-criteria">
+                    <p>
+                        <i class="fas fa-calendar-alt"></i> <span id="search-dates">Đang tải...</span> |
+                        <i class="fas fa-users"></i> <span id="search-guests">...</span> khách
+                    </p>
+                    <button id="change-search-btn" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-edit"></i> Thay đổi tìm kiếm
+                    </button>
+                </div>
+
+                <!-- Container chứa kết quả (Giữ nguyên) -->
+                <div id="search-results-container" class="room-container">
+                     <p id="loading-message">Đang tìm kiếm phòng phù hợp...</p>
+                     <p id="no-results-message" style="display: none;">Rất tiếc, không tìm thấy loại phòng nào phù hợp với yêu cầu của bạn trong khoảng thời gian này.</p>
+                </div>
+            </div>
+        </section>
+
+         <!-- Modal ẩn (Giữ nguyên) -->
+         <div id="search-modal" class="modal">
+             <div class="modal-content">
+                 <span class="close-btn" title="Đóng">×</span>
+                 <h2>Thay đổi tìm kiếm</h2>
+                  <form id="modal-search-form">
+                      {/* Form fields giữ nguyên */}
+                      <div class="form-group">
+                          <label for="modal-checkin-date">Ngày nhận phòng:</label>
+                          <input type="date" id="modal-checkin-date" name="checkin" required>
+                      </div>
+                      <div class="form-group">
+                          <label for="modal-checkout-date">Ngày trả phòng:</label>
+                          <input type="date" id="modal-checkout-date" name="checkout" required>
+                      </div>
+                      <div class="form-group">
+                          <label for="modal-guests">Số lượng khách:</label>
+                          <input type="number" id="modal-guests" name="guests" min="1" value="1" required>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Tìm Lại</button>
+                      <p id="modal-form-message" class="form-message" style="display: none;"></p>
+                  </form>
+             </div>
+         </div>
+
+    </main>
+
+    <!-- Footer (Giữ nguyên) -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 Khách sạn Hoàng Gia. Bảo lưu mọi quyền.</p>
+        </div>
+    </footer>
+
+    <script src="./js/data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Elements (Giữ nguyên) ---
+            const resultsContainer = document.getElementById('search-results-container');
+            const loadingMessage = document.getElementById('loading-message');
+            const noResultsMessage = document.getElementById('no-results-message');
+            const searchDatesSpan = document.getElementById('search-dates');
+            const searchGuestsSpan = document.getElementById('search-guests');
+            const changeSearchBtn = document.getElementById('change-search-btn');
+            const searchModal = document.getElementById('search-modal');
+            const modalForm = document.getElementById('modal-search-form');
+            const modalCheckinInput = document.getElementById('modal-checkin-date');
+            const modalCheckoutInput = document.getElementById('modal-checkout-date');
+            const modalGuestsInput = document.getElementById('modal-guests');
+            const modalFormMessage = document.getElementById('modal-form-message');
+            const closeModalBtn = searchModal.querySelector('.close-btn');
+
+            // --- Lấy và Validate URL Params (Giữ nguyên logic) ---
+            const urlParams = new URLSearchParams(window.location.search);
+            let checkin = urlParams.get('checkin');
+            let checkout = urlParams.get('checkout');
+            let guests = parseInt(urlParams.get('guests') || '1');
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            let isValidParams = true;
+            // ... (logic kiểm tra param giống file trước) ...
+            if (!checkin || !checkout || !/^\d{4}-\d{2}-\d{2}$/.test(checkin) || !/^\d{4}-\d{2}-\d{2}$/.test(checkout)) { isValidParams = false; }
+            else {
+                const checkinDate = new Date(checkin); const checkoutDate = new Date(checkout);
+                if (isNaN(checkinDate.getTime()) || isNaN(checkoutDate.getTime()) || checkinDate < today || checkoutDate <= checkinDate) { isValidParams = false; }
+            }
+            if (isNaN(guests) || guests < 1) { guests = 1; }
+
+
+             // --- Hiển thị tiêu chí & điền modal (Giữ nguyên logic) ---
+             if (isValidParams) {
+                 searchDatesSpan.textContent = `Từ ${formatDate(checkin)} đến ${formatDate(checkout)}`;
+                 searchGuestsSpan.textContent = `${guests}`;
+                 modalCheckinInput.value = checkin;
+                 modalCheckoutInput.value = checkout;
+                 modalGuestsInput.value = guests;
+                 const todayString = today.toISOString().split('T')[0];
+                 modalCheckinInput.setAttribute('min', todayString);
+                 if (checkin) { let nextDay = new Date(checkin); nextDay.setDate(nextDay.getDate() + 1); modalCheckoutInput.setAttribute('min', nextDay.toISOString().split('T')[0]); }
+                 simulateSearch(); // Chạy tìm kiếm
+             } else {
+                loadingMessage.style.display = 'none';
+                noResultsMessage.textContent = 'Thông tin tìm kiếm không hợp lệ. Vui lòng thử lại từ trang chủ.';
+                noResultsMessage.style.display = 'block';
+                searchDatesSpan.textContent = 'Không hợp lệ';
+                searchGuestsSpan.textContent = 'N/A';
+            }
+
+            // --- Xử lý Mở/Đóng Modal & Submit Modal (Giữ nguyên logic) ---
+            changeSearchBtn.addEventListener('click', () => { searchModal.style.display = 'block'; hideModalMessage(); });
+            closeModalBtn.addEventListener('click', () => { searchModal.style.display = 'none'; });
+            window.addEventListener('click', (event) => { if (event.target == searchModal) { searchModal.style.display = 'none'; } });
+            // (Validation date/guests trong modal giữ nguyên)
+            modalCheckinInput.addEventListener('change', function() { /* validation */ });
+            modalCheckoutInput.addEventListener('change', function() { /* validation */ });
+            modalForm.addEventListener('submit', (e) => {
+                 e.preventDefault();
+                 const modalCheckin = modalCheckinInput.value;
+                 const modalCheckout = modalCheckoutInput.value;
+                 const modalGuests = modalGuestsInput.value;
+                 // Validate lại
+                 if (!modalCheckin || !modalCheckout || new Date(modalCheckout) <= new Date(modalCheckin) || parseInt(modalGuests) < 1) {
+                     showModalMessage('Vui lòng kiểm tra lại thông tin tìm kiếm.', 'error'); return;
+                 }
+                 window.location.href = `search-results.html?checkin=${modalCheckin}&checkout=${modalCheckout}&guests=${modalGuests}`;
+             });
+
+
+            // **** HÀM simulateSearch ĐƯỢC CẬP NHẬT ****
+            function simulateSearch() {
+                if (!isValidParams) return;
+
+                loadingMessage.style.display = 'block';
+                noResultsMessage.style.display = 'none';
+                resultsContainer.innerHTML = ''; // Xóa kết quả cũ
+
+                setTimeout(() => {
+                    let foundRoomTypes = false; // Biến kiểm tra xem có tìm thấy loại phòng nào không
+
+                    // Lặp qua tất cả các loại phòng trong dữ liệu
+                    roomTypesData.forEach(roomType => {
+                        // Bước 1: Kiểm tra xem loại phòng có đủ sức chứa không
+                        if ((roomType.MaxNguoiLon + roomType.MaxTreEm) >= guests) {
+
+                            // Bước 2: Gọi hàm mới để tìm các phòng CỤ THỂ còn trống của loại này
+                            const availableRoomsOfType = findAvailableRooms(roomType.ID, checkin, checkout);
+
+                            // Bước 3: Nếu có phòng trống (mảng trả về không rỗng)
+                            if (availableRoomsOfType.length > 0) {
+                                foundRoomTypes = true; // Đánh dấu đã tìm thấy
+
+                                const nights = calculateNights(checkin, checkout);
+                                const totalPrice = roomType.GiaCoBan * nights;
+
+                                // Tạo HTML cho thẻ kết quả
+                                const roomCard = document.createElement('div');
+                                roomCard.classList.add('room-card', 'search-result-card');
+                                roomCard.innerHTML = `
+                                    <img src="${roomType.AnhDaiDienURL || 'https://via.placeholder.com/400x250/eee/aaa?text=No+Image'}" alt="${roomType.TenLoaiPhong}">
+                                    <div class="room-info">
+                                        <h3>${roomType.TenLoaiPhong}</h3>
+                                        <p><i class="fas fa-users"></i> Tối đa: ${roomType.MaxNguoiLon} người lớn ${roomType.MaxTreEm > 0 ? `& ${roomType.MaxTreEm} trẻ em` : ''}</p>
+                                        <p class="room-amenities" title="Tiện nghi nổi bật">
+                                            ${roomType.TienNghiIDs.slice(0, 5).map(id => {
+                                                const amenity = findAmenityById(id);
+                                                return amenity && amenity.Icon ? `<i class="${amenity.Icon}" title="${amenity.TenTienNghi}"></i>` : '';
+                                            }).join(' ')}
+                                            ${roomType.TienNghiIDs.length > 5 ? '...' : ''}
+                                        </p>
+                                        <p class="room-price">
+                                            <strong>${formatCurrency(roomType.GiaCoBan)}/đêm</strong> <br>
+                                            <small>(Tổng ${nights} đêm: ${formatCurrency(totalPrice)})</small>
+                                            <!-- Hiển thị số lượng phòng trống -->
+                                            <span class="availability-count">
+                                                <i class="fas fa-check-circle"></i> Còn ${availableRoomsOfType.length} phòng trống
+                                            </span>
+                                        </p>
+                                        <div class="room-actions">
+                                            <a href="room-details.html?typeId=${roomType.ID}&checkin=${checkin}&checkout=${checkout}&guests=${guests}" class="btn btn-secondary btn-sm">
+                                               <i class="fas fa-info-circle"></i> Xem Chi Tiết
+                                            </a>
+                                        </div>
+                                    </div>
+                                `;
+                                resultsContainer.appendChild(roomCard);
+                            }
+                        }
+                    }); // Kết thúc lặp qua roomTypesData
+
+                    loadingMessage.style.display = 'none';
+                    // Nếu không tìm thấy loại phòng nào phù hợp sau khi lặp
+                    if (!foundRoomTypes) {
+                        noResultsMessage.style.display = 'block';
+                    }
+
+                }, 300); // Giảm độ trễ
+            }
+
+             // --- Helper Functions cho Modal Message (Giữ nguyên) ---
+             function showModalMessage(message, type = 'info') { /* ... */ }
+             function hideModalMessage() { /* ... */ }
+
+        }); // End DOMContentLoaded
+    </script>
+</body>
+</html>

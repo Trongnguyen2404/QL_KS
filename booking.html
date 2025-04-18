@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác nhận thông tin đặt phòng - Khách sạn Hoàng Gia</title> <!-- Đổi title một chút -->
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Style giữ nguyên như file booking.html trước -->
+    <style>
+        .booking-section { background-color: #fff; padding-bottom: 60px; }
+        .booking-container { display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 40px; margin-top: 20px; }
+        .booking-form-part h3, .booking-summary-part h3 { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; font-size: 1.5rem; color: #343a40; }
+        #booking-form .form-group { margin-bottom: 20px; }
+        #booking-form label { display: block; margin-bottom: 8px; font-weight: 500; color: #495057; }
+        #booking-form input[type="text"], #booking-form input[type="email"], #booking-form input[type="tel"], #booking-form textarea { width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 1rem; font-family: inherit; }
+        #booking-form textarea { min-height: 100px; resize: vertical; }
+        #booking-form .input-error-message { color: #dc3545; font-size: 0.85em; margin-top: 5px; display: none; }
+        #booking-form .form-group.error input, #booking-form .form-group.error textarea { border-color: #dc3545; }
+        #booking-form .form-group.error .input-error-message { display: block; }
+        .payment-methods { margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
+        .payment-methods h4 { margin-bottom: 15px; font-size: 1.1rem; }
+        .payment-option { margin-bottom: 10px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #f8f9fa; cursor: pointer; transition: background-color 0.2s ease, border-color 0.2s ease; }
+        .payment-option:hover { background-color: #e9ecef; }
+        .payment-option input[type="radio"] { margin-right: 10px; accent-color: #007bff; }
+        .payment-option.selected { border-color: #007bff; background-color: #e7f3ff; }
+        .booking-summary-part { background-color: #f8f9fa; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); position: sticky; top: 100px; }
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ddd; font-size: 1rem; }
+        .summary-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+        .summary-item dt { color: #6c757d; flex-basis: 40%; }
+        .summary-item dd { font-weight: 500; text-align: right; flex-basis: 60%; color: #343a40; }
+        #summary-room-details { font-size: 1.1em; font-weight: 600; } /* Thay cho room-type */
+        #summary-total-price { font-size: 1.3em; color: #007bff; font-weight: 700; }
+        #booking-error-message { margin-top: 20px; padding: 10px; }
+        @media (max-width: 992px) { .booking-container { grid-template-columns: 1fr; } .booking-summary-part { position: static; margin-top: 30px; } }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+         <div class="container">
+            <div class="logo">
+                <a href="index.html"><img class="logo-img" src="./images/logo.png"></a>
+            </div>
+             <nav class="main-nav">
+                  <ul>
+                      <li><a href="index.html">Trang Chủ</a></li>
+                      <li><a href="search-results.html">Tìm Phòng</a></li>
+                      <li><a href="index.html#about">Giới Thiệu</a></li>
+                      <li><a href="index.html#contact">Liên Hệ</a></li>
+                  </ul>
+             </nav>
+         </div>
+     </header>
+
+    <main>
+        <section class="booking-section">
+            <div class="container">
+                <h2>Xác nhận thông tin đặt phòng</h2>
+
+                <div id="booking-page-content">
+                    <p id="loading-booking-message">Đang tải thông tin đặt phòng...</p>
+                     <p id="error-booking-message" class="form-message error" style="display: none;">Đã xảy ra lỗi hoặc thông tin đặt phòng không hợp lệ. Vui lòng thử lại.</p>
+                    <!-- Nội dung booking sẽ được tạo bởi JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+     <!-- Footer -->
+     <footer class="footer">
+         <div class="container">
+             <p>© 2024 Khách sạn Hoàng Gia. Bảo lưu mọi quyền.</p>
+         </div>
+     </footer>
+
+    <script src="./js/data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Elements ---
+            const bookingPageContent = document.getElementById('booking-page-content');
+            const loadingMessage = document.getElementById('loading-booking-message');
+            const errorMessage = document.getElementById('error-booking-message');
+
+            // --- Get URL Params (Lấy roomId thay vì typeId) ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const roomIdParam = urlParams.get('roomId'); // Lấy ID phòng cụ thể
+            const checkin = urlParams.get('checkin');
+            const checkout = urlParams.get('checkout');
+            const guests = urlParams.get('guests');
+
+            // --- Validate Params ---
+            let isValidBookingParams = true;
+            let specificRoom = null; // Biến lưu thông tin phòng cụ thể
+            let roomType = null;     // Biến lưu thông tin loại phòng
+            const today = new Date(); today.setHours(0,0,0,0);
+
+            // 1. Kiểm tra các tham số cơ bản
+            if (!roomIdParam || !checkin || !checkout || !guests ||
+                !formatDate(checkin) || !formatDate(checkout) ||
+                new Date(checkin) < today || new Date(checkout) <= new Date(checkin) ||
+                isNaN(parseInt(guests)) || parseInt(guests) < 1)
+            {
+                isValidBookingParams = false;
+                showBookingError("Thông tin đặt phòng không đầy đủ hoặc không hợp lệ từ trang trước.");
+            } else {
+                // 2. Tìm phòng cụ thể và loại phòng tương ứng
+                const roomId = parseInt(roomIdParam);
+                specificRoom = roomsData.find(r => r.ID === roomId);
+
+                if (!specificRoom) {
+                    isValidBookingParams = false;
+                    showBookingError(`Không tìm thấy thông tin cho phòng ID ${roomId}.`);
+                } else {
+                    roomType = findRoomTypeById(specificRoom.LoaiPhongID);
+                    if (!roomType) {
+                        isValidBookingParams = false;
+                        showBookingError(`Không tìm thấy loại phòng cho phòng ${specificRoom.SoPhong}.`);
+                    }
+                    // 3. Kiểm tra sức chứa
+                    else if ((roomType.MaxNguoiLon + roomType.MaxTreEm) < parseInt(guests)) {
+                         isValidBookingParams = false;
+                         showBookingError(`Số lượng khách (${guests}) vượt quá sức chứa của phòng ${specificRoom.SoPhong} (${roomType.TenLoaiPhong}).`);
+                    }
+                }
+            }
+
+            // 4. Kiểm tra lại tình trạng phòng lần cuối (RẤT QUAN TRỌNG)
+            if (isValidBookingParams) {
+                const stillAvailableRooms = findAvailableRooms(roomType.ID, checkin, checkout);
+                // Kiểm tra xem ID phòng cụ thể này có còn nằm trong danh sách phòng trống không
+                const isThisRoomStillAvailable = stillAvailableRooms.some(r => r.ID === specificRoom.ID);
+
+                if (!isThisRoomStillAvailable) {
+                    isValidBookingParams = false;
+                     // Hiển thị lỗi cụ thể hơn
+                     showBookingError(`Rất tiếc, phòng ${specificRoom.SoPhong} (${roomType.TenLoaiPhong}) không còn trống trong khoảng thời gian bạn chọn. Vui lòng quay lại và chọn phòng khác.`);
+                }
+            }
+
+
+            // --- Render Content or Error ---
+            if (isValidBookingParams && specificRoom && roomType) {
+                renderBookingPage(specificRoom, roomType, checkin, checkout, guests);
+                loadingMessage.style.display = 'none';
+            } else {
+                 loadingMessage.style.display = 'none';
+                 // Error message đã được hiển thị trong quá trình validate
+                 // Có thể thêm một nút quay lại ở đây nếu muốn
+                 bookingPageContent.innerHTML += '<br><a href="index.html" class="btn btn-secondary">Quay về Trang chủ</a>';
+            }
+
+
+            // --- Function to Render Booking Page ---
+            function renderBookingPage(room, roomTypeData, checkinDate, checkoutDate, guestsCount) {
+                const nights = calculateNights(checkinDate, checkoutDate);
+                // Sử dụng giá của loại phòng
+                const totalPrice = roomTypeData.GiaCoBan * nights;
+
+                bookingPageContent.innerHTML = `
+                    <div class="booking-container">
+                        <div class="booking-form-part">
+                            <h3>Thông tin liên hệ của bạn</h3>
+                            <p style="margin-bottom: 20px; font-size: 0.95em; color: #555;">Vui lòng điền chính xác thông tin để chúng tôi liên hệ xác nhận đặt phòng.</p>
+                            <form id="booking-form" novalidate>
+                                <div class="form-group">
+                                    <label for="full-name">Họ và Tên <span style="color:red">*</span></label>
+                                    <input type="text" id="full-name" name="fullName" required placeholder="Nhập họ tên đầy đủ">
+                                    <div class="input-error-message">Vui lòng nhập họ tên.</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email <span style="color:red">*</span></label>
+                                    <input type="email" id="email" name="email" required placeholder="vidu@email.com">
+                                     <div class="input-error-message">Vui lòng nhập địa chỉ email hợp lệ.</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Số điện thoại <span style="color:red">*</span></label>
+                                    <input type="tel" id="phone" name="phone" required placeholder="Nhập số điện thoại (VD: 09xxxxxxxx)">
+                                     <div class="input-error-message">Vui lòng nhập số điện thoại hợp lệ (10-11 số).</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="special-requests">Yêu cầu đặc biệt (tùy chọn)</label>
+                                    <textarea id="special-requests" name="specialRequests" placeholder="Ví dụ: check-in sớm (nếu có thể), cần hóa đơn VAT..."></textarea>
+                                </div>
+
+                                <div class="payment-methods">
+                                    <h4>Chọn phương thức thanh toán</h4>
+                                    <div class="payment-option selected">
+                                         <input type="radio" id="pay-at-hotel" name="paymentMethod" value="pay_at_hotel" checked>
+                                         <label for="pay-at-hotel">Thanh toán tại khách sạn</label>
+                                         <p style="font-size: 0.9em; color: #6c757d; margin-left: 25px;">Thanh toán khi nhận hoặc trả phòng.</p>
+                                     </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 30px; padding: 15px;">
+                                   <i class="fas fa-check-circle"></i> Hoàn tất đặt phòng
+                                </button>
+                            </form>
+                        </div>
+
+                        <aside class="booking-summary-part">
+                            <h3>Tóm tắt đặt phòng</h3>
+                            <dl class="summary-list">
+                                <div class="summary-item">
+                                    <dt>Phòng đã chọn:</dt>
+                                    <dd id="summary-room-details">
+                                        <strong>Phòng ${room.SoPhong}</strong> (Tầng ${room.Tang})<br>
+                                        <small>${roomTypeData.TenLoaiPhong}</small>
+                                    </dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt><i class="fas fa-calendar-check"></i> Nhận phòng:</dt>
+                                    <dd id="summary-checkin">${formatDate(checkinDate)}</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt><i class="fas fa-calendar-times"></i> Trả phòng:</dt>
+                                    <dd id="summary-checkout">${formatDate(checkoutDate)}</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt><i class="fas fa-moon"></i> Số đêm:</dt>
+                                    <dd id="summary-nights">${nights}</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt><i class="fas fa-users"></i> Số khách:</dt>
+                                    <dd id="summary-guests">${guestsCount}</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt>Đơn giá / đêm:</dt>
+                                    <dd id="summary-price-per-night">${formatCurrency(roomTypeData.GiaCoBan)}</dd>
+                                </div>
+                                <div class="summary-item" style="border-top: 1px solid #ccc; padding-top: 15px; margin-top: 10px;">
+                                    <dt style="font-weight: bold; color: #343a40;">Tổng tiền dự kiến:</dt>
+                                    <dd id="summary-total-price" style="font-weight: bold;">${formatCurrency(totalPrice)}</dd>
+                                </div>
+                            </dl>
+                            <p id="booking-error-message" class="form-message error" style="display: none;"></p>
+                        </aside>
+                    </div>
+                `;
+
+                // Add event listener to the form AFTER it's rendered
+                const bookingForm = document.getElementById('booking-form');
+                if (bookingForm) {
+                     // Truyền cả specificRoom và roomTypeData vào hàm setup
+                    setupFormValidation(bookingForm, specificRoom, roomTypeData, checkinDate, checkoutDate, guestsCount, totalPrice);
+                }
+
+                 // Add style cho radio button selected (Giữ nguyên)
+                 const paymentOptions = document.querySelectorAll('.payment-option input[type="radio"]');
+                 paymentOptions.forEach(radio => {
+                     radio.addEventListener('change', function() {
+                         document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+                         if (this.checked) { this.closest('.payment-option').classList.add('selected'); }
+                     });
+                 });
+
+            } // End renderBookingPage
+
+            // --- Function to Setup Form Validation and Submission (CẬP NHẬT để lưu roomId) ---
+            function setupFormValidation(form, room, roomTypeData, checkinDate, checkoutDate, guestsCount, totalPrice) {
+                 // ... (lấy elements input như cũ: nameInput, emailInput, phoneInput, ...)
+                 const nameInput = document.getElementById('full-name');
+                 const emailInput = document.getElementById('email');
+                 const phoneInput = document.getElementById('phone');
+                 const specialRequestsInput = document.getElementById('special-requests');
+                 const formErrorMessage = document.getElementById('booking-error-message');
+
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    hideBookingError();
+                    let isValid = true;
+
+                    // Validate Name, Email, Phone (Giữ nguyên)
+                     if (!validateInput(nameInput, nameInput.value.trim().length > 1, "Vui lòng nhập họ tên hợp lệ.")) isValid = false;
+                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                     if (!validateInput(emailInput, emailRegex.test(emailInput.value.trim()), "Vui lòng nhập địa chỉ email hợp lệ.")) isValid = false;
+                     const phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})\b$/; // Regex VN phone
+                     if (!validateInput(phoneInput, phoneRegex.test(phoneInput.value.trim()), "Vui lòng nhập số điện thoại Việt Nam hợp lệ.")) isValid = false;
+
+                    if (isValid) {
+                        // --- Dữ liệu hợp lệ ---
+                        const bookingDetails = {
+                            // Thông tin phòng và giá
+                            roomId: room.ID, // LƯU ID PHÒNG CỤ THỂ
+                            roomNumber: room.SoPhong,
+                            roomFloor: room.Tang,
+                            roomTypeId: roomTypeData.ID,
+                            roomTypeName: roomTypeData.TenLoaiPhong,
+                            pricePerNight: roomTypeData.GiaCoBan, // Lưu giá tại thời điểm đặt
+                            totalPrice: totalPrice,
+                            // Thông tin ngày và khách
+                            checkinDate: checkinDate,
+                            checkoutDate: checkoutDate,
+                            nights: calculateNights(checkinDate, checkoutDate),
+                            guests: parseInt(guestsCount),
+                            // Thông tin người đặt
+                            customerName: nameInput.value.trim(),
+                            customerEmail: emailInput.value.trim(),
+                            customerPhone: phoneInput.value.trim(),
+                            specialRequests: specialRequestsInput.value.trim(),
+                            // Thông tin khác (mô phỏng)
+                            paymentMethod: form.elements.paymentMethod.value,
+                            bookingTime: new Date().toISOString(),
+                            bookingStatusId: BOOKING_STATUS.DA_XAC_NHAN, // <<-- THAY ĐỔI: Giả sử đặt từ web là xác nhận luôn
+                            bookingChannelId: 1 // Giả sử ID 1 là "Website"
+                        };
+
+                        // Lưu vào localStorage (Mô phỏng)
+                        try {
+                            localStorage.setItem('pendingBookingConfirmation', JSON.stringify(bookingDetails));
+                            console.log("Booking details saved to localStorage:", bookingDetails);
+
+                            // ** Quan trọng (Mô phỏng cập nhật data): Thêm booking này vào bookingsData **
+                            // Điều này giúp các lần kiểm tra sau phản ánh đúng hơn (cho các user khác)
+                            // Trong ứng dụng thực, backend sẽ làm việc này.
+                            const newBookingId = Date.now(); // Tạo ID tạm thời
+                            bookingsData.push({
+                                ID: newBookingId,
+                                LoaiPhongID: bookingDetails.roomTypeId,
+                                PhongID: bookingDetails.roomId, // Gán luôn phòng cụ thể
+                                NgayNhanPhong: bookingDetails.checkinDate,
+                                NgayTraPhong: bookingDetails.checkoutDate,
+                                TrangThaiDatPhongID: bookingDetails.bookingStatusId
+                                // Thêm các trường khác nếu cần cho logic phức tạp hơn
+                            });
+                             console.log("Simulated adding booking to bookingsData:", bookingsData[bookingsData.length-1]);
+
+
+                            // Chuyển hướng đến trang xác nhận
+                             window.location.href = 'confirmation.html';
+
+                        } catch (error) {
+                            console.error("Error saving booking to localStorage:", error);
+                             showBookingError("Đã xảy ra lỗi khi lưu thông tin đặt phòng. Vui lòng thử lại.", true);
+                        }
+
+                    } else {
+                         showBookingError("Vui lòng kiểm tra lại các thông tin bắt buộc.", true);
+                         form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+
+                 // Helper validation function (Giữ nguyên)
+                 function validateInput(inputElement, condition, errorMessage) { /* ... */ }
+                 // Reset validation on input (Giữ nguyên)
+                 [nameInput, emailInput, phoneInput].forEach(input => { /* ... */ });
+
+            } // End setupFormValidation
+
+            // --- Function to show general booking error (Giữ nguyên) ---
+             function showBookingError(msg, onlyGeneral = false) { /* ... */ }
+             function hideBookingError() { /* ... */ }
+
+        }); // End DOMContentLoaded
+    </script>
+</body>
+</html>

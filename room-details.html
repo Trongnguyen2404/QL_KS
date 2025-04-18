@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết phòng - Khách sạn Hoàng Gia</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* CSS giữ nguyên như file room-details.html trước đó */
+        .room-detail-section { background-color: #fff; padding-bottom: 40px; }
+        .room-detail-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; margin-top: 20px; }
+        .room-gallery { border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .main-image img { width: 100%; height: 450px; object-fit: cover; border-bottom: 1px solid #eee; }
+        .thumbnail-images { display: flex; gap: 10px; padding: 15px; background-color: #f8f9fa; overflow-x: auto; }
+        .thumbnail-images img { width: 100px; height: 70px; object-fit: cover; border-radius: 4px; cursor: pointer; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease; }
+        .thumbnail-images img:hover, .thumbnail-images img.active-thumb { opacity: 1; transform: scale(1.05); }
+        .room-description h2 { text-align: left; margin-top: 0; margin-bottom: 1rem; font-size: 2.2rem; }
+        .room-meta { display: flex; gap: 20px; margin-bottom: 20px; color: #6c757d; font-size: 0.95rem; flex-wrap: wrap; }
+        .room-meta span { display: flex; align-items: center; gap: 5px; }
+        .room-description p { margin-bottom: 20px; color: #555; line-height: 1.7; }
+        .amenities-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; }
+        .amenities-list li { display: flex; align-items: center; gap: 10px; color: #495057; }
+        .amenities-list i { color: #007bff; width: 20px; text-align: center; }
+        .booking-widget { background-color: #f8f9fa; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: sticky; top: 100px; }
+        .booking-widget h3 { margin-top: 0; margin-bottom: 20px; text-align: center; font-size: 1.4rem; }
+        .widget-price { text-align: center; margin-bottom: 20px; font-size: 1.1rem; }
+        .widget-price .price-value { font-size: 1.8rem; font-weight: 700; color: #007bff; }
+        .widget-price .price-unit { font-size: 1rem; color: #6c757d; }
+        #widget-booking-form .form-group { margin-bottom: 15px; }
+        #widget-booking-form label { font-size: 0.9rem; margin-bottom: 5px; display: block; }
+        #widget-booking-form input, #widget-booking-form button { width: 100%; padding: 12px; font-size: 1rem; border-radius: 4px; }
+        #widget-booking-form input { border: 1px solid #ced4da; }
+        #widget-booking-form button { margin-top: 10px; }
+        #availability-status { text-align: center; margin-top: 15px; padding: 10px; border-radius: 4px; font-weight: 500; }
+        #availability-status.available { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        #availability-status.unavailable { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .room-detail-grid { grid-template-columns: 1fr; gap: 30px; }
+            .booking-widget { position: static; margin-top: 30px; }
+            .main-image img { height: 350px; }
+        }
+        @media (max-width: 576px) {
+            .main-image img { height: 250px; }
+            .room-description h2 { font-size: 1.8rem; }
+            .amenities-list { grid-template-columns: 1fr; }
+            .booking-widget { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+     <header class="header">
+         <div class="container">
+            <div class="logo">
+                <a href="index.html"><img class="logo-img" src="./images/logo.png"></a>
+            </div>
+             <nav class="main-nav">
+                  <ul>
+                      <li><a href="index.html">Trang Chủ</a></li>
+                      <li><a href="search-results.html">Tìm Phòng</a></li>
+                      <li><a href="index.html#about">Giới Thiệu</a></li>
+                      <li><a href="index.html#contact">Liên Hệ</a></li>
+                  </ul>
+             </nav>
+         </div>
+     </header>
+
+    <main>
+        <section class="room-detail-section">
+            <div class="container">
+                <!-- Breadcrumbs or back link -->
+                <div style="margin-bottom: 20px;">
+                    <a href="search-results.html" id="back-to-search-link" style="display: none;">← Quay lại kết quả tìm kiếm</a>
+                     <a href="index.html" id="back-to-home-link" style="display: inline;">← Quay lại trang chủ</a>
+                </div>
+
+                <div id="room-detail-content">
+                    <!-- Nội dung chi tiết phòng sẽ được load vào đây -->
+                     <p id="loading-detail-message">Đang tải thông tin phòng...</p>
+                     <p id="error-detail-message" style="display: none; color: red;">Không tìm thấy thông tin loại phòng này.</p>
+                     <!-- Cấu trúc HTML mẫu sẽ được tạo bởi JS giữ nguyên -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+     <!-- Footer -->
+     <footer class="footer">
+         <div class="container">
+             <p>© 2024 Khách sạn Hoàng Gia. Bảo lưu mọi quyền.</p>
+         </div>
+     </footer>
+
+    <script src="./js/data.js"></script>
+    <script>
+        // Nội dung cho thẻ <script> trong file room-details.html
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Elements ---
+            const roomDetailContent = document.getElementById('room-detail-content');
+            const loadingMessage = document.getElementById('loading-detail-message');
+            const errorMessage = document.getElementById('error-detail-message');
+            const backToSearchLink = document.getElementById('back-to-search-link');
+            const backToHomeLink = document.getElementById('back-to-home-link');
+
+            // --- Get URL Params ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const typeId = urlParams.get('typeId');
+            let urlCheckin = urlParams.get('checkin');
+            let urlCheckout = urlParams.get('checkout');
+            let urlGuests = urlParams.get('guests');
+
+            // --- Hiển thị link quay lại phù hợp ---
+            if (urlCheckin && urlCheckout && urlGuests && formatDate(urlCheckin) && formatDate(urlCheckout) && parseInt(urlGuests)>0) {
+                backToSearchLink.href = `search-results.html?checkin=${urlCheckin}&checkout=${urlCheckout}&guests=${urlGuests}`;
+                backToSearchLink.style.display = 'inline';
+                backToHomeLink.style.display = 'none';
+            } else {
+                backToSearchLink.style.display = 'none';
+                backToHomeLink.style.display = 'inline';
+            }
+
+            // --- Validate Type ID ---
+            if (!typeId) {
+                showError("ID loại phòng không hợp lệ.");
+                return;
+            }
+
+            // --- Find Room Data ---
+            const roomType = findRoomTypeById(typeId);
+
+            if (!roomType) {
+                showError("Không tìm thấy thông tin cho loại phòng này.");
+                return;
+            }
+
+            // --- Update Page Title ---
+            document.title = `${roomType.TenLoaiPhong} - Khách sạn Hoàng Gia`;
+
+            // --- Render Room Details ---
+            renderRoomDetails(roomType); // Hàm render HTML chính
+            loadingMessage.style.display = 'none'; // Ẩn thông báo loading
+
+
+            // --- Function to render details (Render HTML structure) ---
+            function renderRoomDetails(data) {
+                // Tạo cấu trúc HTML cơ bản
+                roomDetailContent.innerHTML = `
+                    <div class="room-detail-grid">
+                        <div class="room-info-main">
+                            <div class="room-gallery">
+                                <div class="main-image">
+                                    <img id="main-room-image" src="${data.AnhDaiDienURL || 'https://via.placeholder.com/800x500/eee/aaa?text=No+Image'}" alt="${data.TenLoaiPhong}">
+                                </div>
+                                <div class="thumbnail-images" id="room-thumbnails"></div>
+                            </div>
+                            <div class="room-description">
+                                <h2 id="room-title">${data.TenLoaiPhong}</h2>
+                                <div class="room-meta">
+                                    <span><i class="fas fa-users"></i> Tối đa: ${data.MaxNguoiLon} người lớn ${data.MaxTreEm > 0 ? `& ${data.MaxTreEm} trẻ em` : ''}</span>
+                                    <!-- Thêm các meta khác nếu cần -->
+                                </div>
+                                <p id="room-description-text">${(data.MoTa || '').replace(/\n/g, '<br>')}</p>
+                                <h3>Tiện nghi nổi bật</h3>
+                                <ul class="amenities-list" id="room-amenities"></ul>
+                            </div>
+                        </div>
+                        <aside class="booking-widget">
+                            <h3><i class="fas fa-calendar-check"></i> Đặt phòng này</h3>
+                            <div class="widget-price">
+                                <span class="price-value">${formatCurrency(data.GiaCoBan)}</span>
+                                <span class="price-unit">/đêm</span>
+                            </div>
+                            <form id="widget-booking-form" novalidate>
+                                <div class="form-group">
+                                    <label for="widget-checkin-date">Ngày nhận phòng:</label>
+                                    <input type="date" id="widget-checkin-date" name="checkin" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="widget-checkout-date">Ngày trả phòng:</label>
+                                    <input type="date" id="widget-checkout-date" name="checkout" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="widget-guests">Số lượng khách:</label>
+                                    <input type="number" id="widget-guests" name="guests" min="1" max="${data.MaxNguoiLon + data.MaxTreEm}" value="1" required>
+                                </div>
+                                <button type="button" id="check-availability-btn" class="btn btn-secondary btn-sm" style="width: 100%; margin-bottom: 15px;">
+                                    <i class="fas fa-search"></i> Kiểm tra tình trạng phòng
+                                </button>
+                                <div id="availability-result" style="margin-bottom: 15px;">
+                                    <div id="availability-status" style="display: none;"></div>
+                                    <div class="form-group" id="specific-room-selection" style="display: none;">
+                                        <label for="available-room-select">Chọn phòng cụ thể:</label>
+                                        <select id="available-room-select" name="roomId" required>
+                                            <option value="">-- Vui lòng chọn phòng --</option>
+                                        </select>
+                                        <div class="input-error-message" id="room-select-error" style="display:none;">Vui lòng chọn một phòng cụ thể.</div>
+                                    </div>
+                                </div>
+                                <button type="submit" id="widget-book-now-btn" class="btn btn-primary" disabled>
+                                    <i class="fas fa-arrow-right"></i> Tiếp tục đặt phòng
+                                </button>
+                                <p id="widget-form-message" class="form-message" style="display: none;"></p>
+                            </form>
+                        </aside>
+                    </div>
+                `;
+
+                // Populate thumbnails
+                const thumbnailsContainer = document.getElementById('room-thumbnails');
+                const mainImage = document.getElementById('main-room-image');
+                const allImages = [data.AnhDaiDienURL, ...(data.AnhKhac || [])].filter(url => url);
+
+                if (allImages.length === 0) {
+                    mainImage.src = 'https://via.placeholder.com/800x500/eee/aaa?text=No+Image';
+                    thumbnailsContainer.innerHTML = '<small>Không có ảnh chi tiết</small>';
+                } else {
+                    mainImage.src = allImages[0];
+                    allImages.forEach((imgUrl, index) => {
+                        const thumb = document.createElement('img');
+                        thumb.src = imgUrl;
+                        thumb.alt = `Ảnh ${data.TenLoaiPhong} ${index + 1}`;
+                        if (index === 0) thumb.classList.add('active-thumb');
+                        thumb.addEventListener('click', () => {
+                            mainImage.src = imgUrl;
+                            thumbnailsContainer.querySelectorAll('img').forEach(t => t.classList.remove('active-thumb'));
+                            thumb.classList.add('active-thumb');
+                        });
+                        thumbnailsContainer.appendChild(thumb);
+                    });
+                }
+
+                // Populate amenities
+                const amenitiesContainer = document.getElementById('room-amenities');
+                if(data.TienNghiIDs && data.TienNghiIDs.length > 0) {
+                    amenitiesContainer.innerHTML = ''; // Xóa nội dung cũ nếu có
+                    data.TienNghiIDs.forEach(amenityId => {
+                        const amenity = findAmenityById(amenityId);
+                        if (amenity) {
+                            const li = document.createElement('li');
+                            li.innerHTML = `<i class="${amenity.Icon || 'fas fa-check-circle'}"></i> ${amenity.TenTienNghi}`;
+                            amenitiesContainer.appendChild(li);
+                        }
+                    });
+                } else {
+                    amenitiesContainer.innerHTML = '<li><small>Không có thông tin tiện nghi cụ thể.</small></li>';
+                }
+
+                // --- Setup Booking Widget Logic ---
+                setupBookingWidget(data); // Gọi hàm setup sau khi HTML đã được render
+            } // End renderRoomDetails
+
+
+            // --- Function to setup booking widget (Logic tương tác và kiểm tra) ---
+            function setupBookingWidget(roomData) {
+                // --- Lấy các elements của widget ---
+                const widgetForm = document.getElementById('widget-booking-form');
+                const checkinInput = document.getElementById('widget-checkin-date');
+                const checkoutInput = document.getElementById('widget-checkout-date');
+                const guestsInput = document.getElementById('widget-guests');
+                const checkBtn = document.getElementById('check-availability-btn');
+                const bookBtn = document.getElementById('widget-book-now-btn');
+                const statusDiv = document.getElementById('availability-status');
+                const roomSelectionDiv = document.getElementById('specific-room-selection');
+                const roomSelect = document.getElementById('available-room-select');
+                const roomSelectError = document.getElementById('room-select-error');
+                const widgetMessage = document.getElementById('widget-form-message');
+
+                // --- Thiết lập giá trị ban đầu và validation ---
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                const todayString = today.toISOString().split('T')[0];
+                checkinInput.setAttribute('min', todayString);
+
+                // --- Pre-fill dữ liệu từ URL ---
+                let prefillSuccess = false;
+                if (urlCheckin && urlCheckout && urlGuests &&
+                    formatDate(urlCheckin) && formatDate(urlCheckout) &&
+                    new Date(urlCheckin) >= today &&
+                    new Date(urlCheckout) > new Date(urlCheckin) &&
+                    parseInt(urlGuests) >= 1 &&
+                    parseInt(urlGuests) <= (roomData.MaxNguoiLon + roomData.MaxTreEm))
+                {
+                    checkinInput.value = urlCheckin;
+                    checkoutInput.value = urlCheckout;
+                    guestsInput.value = urlGuests;
+
+                    let nextDayPrefill = new Date(urlCheckin);
+                    if (!isNaN(nextDayPrefill.getTime())) {
+                        nextDayPrefill.setDate(nextDayPrefill.getDate() + 1);
+                        checkoutInput.setAttribute('min', nextDayPrefill.toISOString().split('T')[0]);
+                    }
+
+                    prefillSuccess = true;
+                    console.log("Prefilled data from URL and checking availability automatically.");
+                    checkAvailability(); // Tự động kiểm tra
+                } else {
+                    guestsInput.value = Math.min(1, roomData.MaxNguoiLon + roomData.MaxTreEm); // Mặc định 1 khách
+                }
+
+                // --- Event Listeners ---
+                checkinInput.addEventListener('change', handleCheckinChange);
+                checkoutInput.addEventListener('change', handleCheckoutChange);
+                guestsInput.addEventListener('change', handleGuestChange);
+                roomSelect.addEventListener('change', handleRoomSelectionChange);
+                checkBtn.addEventListener('click', checkAvailability);
+                widgetForm.addEventListener('submit', handleFormSubmit);
+
+                // --- Hàm xử lý khi Checkin thay đổi ---
+                function handleCheckinChange() {
+                    const checkinVal = checkinInput.value;
+                    checkoutInput.removeAttribute('min'); // Reset min trước
+                    checkoutInput.value = ''; // Reset giá trị checkout
+
+                    if (checkinVal) {
+                        const selectedDate = new Date(checkinVal);
+                        if (isNaN(selectedDate.getTime())) {
+                            resetAvailabilityAndSelection();
+                            return;
+                        }
+                        if (selectedDate < today) {
+                            showWidgetMessage('Ngày nhận phòng không được là ngày quá khứ.', 'error');
+                            checkinInput.value = '';
+                            resetAvailabilityAndSelection();
+                            return;
+                        }
+                        let nextDay = new Date(selectedDate);
+                        nextDay.setDate(nextDay.getDate() + 1);
+                        const nextDayString = nextDay.toISOString().split('T')[0];
+                        checkoutInput.setAttribute('min', nextDayString);
+                    }
+                    resetAvailabilityAndSelection();
+                    hideWidgetMessage();
+                }
+
+                // --- Hàm xử lý khi Checkout thay đổi ---
+                function handleCheckoutChange() {
+                    if (checkinInput.value && checkoutInput.value) {
+                        if (new Date(checkoutInput.value) <= new Date(checkinInput.value)) {
+                            showWidgetMessage('Ngày trả phòng phải sau ngày nhận phòng.', 'error');
+                            checkoutInput.value = '';
+                        } else {
+                            hideWidgetMessage();
+                        }
+                    }
+                    resetAvailabilityAndSelection();
+                }
+
+                // --- Hàm xử lý khi số khách thay đổi ---
+                function handleGuestChange() {
+                    const guestsVal = parseInt(guestsInput.value);
+                    const maxGuests = roomData.MaxNguoiLon + roomData.MaxTreEm;
+                    if (isNaN(guestsVal) || guestsVal < 1) {
+                        showWidgetMessage('Số khách phải ít nhất là 1.', 'error');
+                        guestsInput.value = 1;
+                    } else if (guestsVal > maxGuests) {
+                        showWidgetMessage(`Loại phòng này chỉ chứa tối đa ${maxGuests} khách.`, 'error');
+                        guestsInput.value = maxGuests;
+                    } else {
+                        hideWidgetMessage();
+                    }
+                    resetAvailabilityAndSelection();
+                }
+
+                // --- Hàm xử lý khi chọn phòng từ Dropdown ---
+                function handleRoomSelectionChange() {
+                    if (roomSelect.value) {
+                        bookBtn.disabled = false; // Bật nút đặt
+                        roomSelectError.style.display = 'none';
+                        roomSelect.closest('.form-group').classList.remove('error');
+                        hideWidgetMessage(); // Ẩn lỗi chung nếu có
+                    } else {
+                        bookBtn.disabled = true; // Tắt nút nếu không chọn
+                    }
+                }
+
+                // --- Hàm xử lý khi Submit Form ---
+                function handleFormSubmit(e) {
+                    e.preventDefault();
+                    if (!validateWidgetInputs(true)) { // true để kiểm tra cả việc chọn phòng
+                        console.log("Form submission prevented due to validation errors.");
+                        return;
+                    }
+
+                    const selectedRoomId = roomSelect.value;
+                    const checkin = checkinInput.value;
+                    const checkout = checkoutInput.value;
+                    const guests = guestsInput.value;
+
+                    const bookingUrl = `booking.html?roomId=${selectedRoomId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`;
+                    console.log("Redirecting to booking page with roomId:", bookingUrl);
+                    window.location.href = bookingUrl;
+                }
+
+                // --- Hàm kiểm tra tình trạng phòng ---
+                function checkAvailability() {
+                    hideWidgetMessage();
+                    resetAvailabilityAndSelection(); // Reset trước khi kiểm tra
+
+                    if (!validateWidgetInputs(false)) { // false: chưa cần kiểm tra chọn phòng ở bước này
+                        bookBtn.disabled = true; // Đảm bảo nút đặt bị tắt nếu input lỗi
+                        return;
+                    }
+
+                    const checkin = checkinInput.value;
+                    const checkout = checkoutInput.value;
+
+                    console.log(`Checking availability for RoomTypeID: ${roomData.ID}, From: ${checkin}, To: ${checkout}`);
+                    const availableRooms = findAvailableRooms(roomData.ID, checkin, checkout); // Gọi hàm từ data.js
+
+                    statusDiv.style.display = 'block';
+                    bookBtn.disabled = true; // Luôn tắt nút đặt sau khi kiểm tra, đợi chọn phòng
+
+                    if (availableRooms.length > 0) {
+                        statusDiv.innerHTML = `<i class="fas fa-check-circle"></i> Tìm thấy <strong>${availableRooms.length}</strong> phòng trống loại này! Vui lòng chọn phòng bên dưới:`;
+                        statusDiv.className = 'available';
+                        roomSelectionDiv.style.display = 'block';
+                        roomSelect.innerHTML = '<option value="">-- Vui lòng chọn phòng --</option>';
+                        availableRooms.forEach(room => {
+                            const option = document.createElement('option');
+                            option.value = room.ID;
+                            option.textContent = `Phòng ${room.SoPhong} (Tầng ${room.Tang})`;
+                            roomSelect.appendChild(option);
+                        });
+                        roomSelect.closest('.form-group').classList.remove('error');
+                        roomSelectError.style.display = 'none';
+                    } else {
+                        statusDiv.innerHTML = '<i class="fas fa-times-circle"></i> Hết phòng loại này trong khoảng thời gian đã chọn.';
+                        statusDiv.className = 'unavailable';
+                        roomSelectionDiv.style.display = 'none';
+                    }
+                } // End checkAvailability
+
+                // --- Hàm kiểm tra các input của widget ---
+                function validateWidgetInputs(checkRoomSelection = false) { // Thêm tham số để kiểm tra cả dropdown
+                    let isValid = true;
+                    hideWidgetMessage(); // Ẩn lỗi cũ
+
+                    if (!checkinInput.value || new Date(checkinInput.value) < today) {
+                        showWidgetMessage('Ngày nhận phòng không hợp lệ.', 'error'); isValid = false;
+                    } else if (!checkoutInput.value || new Date(checkoutInput.value) <= new Date(checkinInput.value)) {
+                        showWidgetMessage('Ngày trả phòng phải sau ngày nhận phòng.', 'error'); isValid = false;
+                    }
+
+                    const guestsVal = parseInt(guestsInput.value);
+                    const maxGuests = roomData.MaxNguoiLon + roomData.MaxTreEm;
+                    if (isNaN(guestsVal) || guestsVal < 1 || guestsVal > maxGuests) {
+                        showWidgetMessage(`Số lượng khách không hợp lệ (1-${maxGuests}).`, 'error'); isValid = false;
+                    }
+
+                    // Kiểm tra thêm việc chọn phòng nếu được yêu cầu (khi submit)
+                    if (checkRoomSelection) {
+                        if (!roomSelect.value) {
+                            showWidgetMessage("Vui lòng chọn một phòng cụ thể.", "error");
+                            roomSelect.closest('.form-group').classList.add('error');
+                            roomSelectError.style.display = 'block';
+                            isValid = false;
+                        } else {
+                            roomSelect.closest('.form-group').classList.remove('error');
+                            roomSelectError.style.display = 'none';
+                        }
+                    }
+
+                    return isValid;
+                }
+
+                // --- Hàm reset trạng thái và lựa chọn phòng ---
+                function resetAvailabilityAndSelection() {
+                    statusDiv.style.display = 'none';
+                    statusDiv.textContent = '';
+                    statusDiv.className = '';
+                    roomSelectionDiv.style.display = 'none';
+                    roomSelect.innerHTML = '<option value="">-- Vui lòng chọn phòng --</option>';
+                    bookBtn.disabled = true;
+                    // Không ẩn widgetMessage ở đây vì validation có thể vẫn cần hiển thị lỗi
+                    roomSelectError.style.display = 'none';
+                    roomSelect.closest('.form-group').classList.remove('error');
+                }
+
+                // --- Hàm hiển thị/ẩn thông báo lỗi của Widget ---
+                function showWidgetMessage(message, type = 'info') {
+                    if (widgetMessage) {
+                        widgetMessage.textContent = message;
+                        widgetMessage.className = `form-message ${type}`;
+                        widgetMessage.style.display = 'block';
+                    }
+                }
+                function hideWidgetMessage() {
+                    if (widgetMessage) {
+                        widgetMessage.style.display = 'none';
+                    }
+                }
+
+            } // End setupBookingWidget
+
+            // --- Function to show general page error ---
+            function showError(msg) {
+                loadingMessage.style.display = 'none';
+                errorMessage.textContent = msg;
+                errorMessage.style.display = 'block';
+                const grid = document.querySelector('.room-detail-grid');
+                if(grid) grid.style.display = 'none';
+            }
+
+        }); // End DOMContentLoaded
+    </script>
+
+</body>
+</html>

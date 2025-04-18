@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt phòng thành công - Khách sạn Hoàng Gia</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .confirmation-section {
+            padding: 40px 0 60px 0;
+            background-color: #f8f9fa; /* Nền nhẹ nhàng */
+        }
+        .confirmation-box {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center; /* Căn giữa nội dung box */
+        }
+        .confirmation-icon {
+            font-size: 4rem;
+            color: #28a745; /* Màu xanh lá thành công */
+            margin-bottom: 20px;
+        }
+        .confirmation-box h2 {
+            color: #28a745;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        .confirmation-box p {
+            color: #555;
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+        .booking-code {
+            display: inline-block;
+            background-color: #e9ecef;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #343a40;
+            margin-bottom: 30px;
+            border: 1px dashed #ced4da;
+        }
+         .booking-code strong {
+             color: #007bff;
+         }
+
+        /* Tóm tắt chi tiết */
+         .confirmation-summary {
+            text-align: left; /* Căn trái phần tóm tắt */
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+         }
+         .confirmation-summary h3 {
+            text-align: center;
+             margin-bottom: 25px;
+             font-size: 1.4rem;
+         }
+         /* Sử dụng lại style .summary-item từ booking.html nếu muốn */
+         .summary-item { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #ddd; font-size: 0.95rem; }
+         .summary-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+         .summary-item dt { color: #6c757d; flex-basis: 45%; }
+         .summary-item dd { font-weight: 500; text-align: right; flex-basis: 55%; color: #343a40; }
+         /* Style riêng cho tổng tiền */
+         .summary-item.total { border-top: 1px solid #ccc; padding-top: 15px; margin-top: 10px; font-size: 1.1rem;}
+         .summary-item.total dt { font-weight: bold; color: #343a40;}
+         .summary-item.total dd { font-weight: bold; color: #007bff; font-size: 1.2em;}
+
+         .confirmation-actions {
+             margin-top: 40px;
+             display: flex;
+             justify-content: center;
+             gap: 15px;
+         }
+
+         /* Lỗi nếu không tìm thấy booking */
+         #no-booking-info {
+             color: #dc3545;
+             font-weight: bold;
+             text-align: center;
+         }
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+         <div class="container">
+            <div class="logo">
+                <a href="index.html"><img class="logo-img" src="./images/logo.png"></a>
+            </div>
+             <nav class="main-nav">
+                  <ul>
+                      <li><a href="index.html">Trang Chủ</a></li>
+                      <li><a href="search-results.html">Tìm Phòng</a></li>
+                      <li><a href="index.html#about">Giới Thiệu</a></li>
+                      <li><a href="index.html#contact">Liên Hệ</a></li>
+                  </ul>
+             </nav>
+         </div>
+     </header>
+
+    <main>
+        <section class="confirmation-section">
+            <div class="container">
+                <div id="confirmation-content">
+                     <p id="loading-confirmation">Đang xử lý...</p>
+                     <div id="no-booking-info" style="display: none;">Không tìm thấy thông tin đặt phòng. Có thể bạn đã truy cập trực tiếp trang này.</div>
+
+                    <!-- Nội dung xác nhận sẽ được tạo bởi JS -->
+                    <!--
+                    <div class="confirmation-box">
+                        <div class="confirmation-icon"><i class="fas fa-check-circle"></i></div>
+                        <h2>Đặt phòng thành công!</h2>
+                        <p>Cảm ơn bạn đã đặt phòng tại Khách sạn Hoàng Gia. Một email xác nhận (giả lập) đã được gửi đến địa chỉ <strong id="customer-email-confirm">...</strong>.</p>
+                        <p>Vui lòng lưu lại mã đặt phòng của bạn:</p>
+                        <div class="booking-code">Mã đặt phòng: <strong id="booking-code-confirm">...</strong></div>
+
+                        <div class="confirmation-summary">
+                            <h3>Chi tiết đặt phòng</h3>
+                            <dl class="summary-list">
+                                <div class="summary-item">
+                                    <dt>Họ và tên:</dt>
+                                    <dd id="summary-cust-name">...</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt>Số điện thoại:</dt>
+                                    <dd id="summary-cust-phone">...</dd>
+                                </div>
+                                <hr style="border: none; border-top: 1px dashed #ddd; margin: 15px 0;">
+                                <div class="summary-item">
+                                    <dt>Phòng đã đặt:</dt>
+                                    <dd id="summary-room-details-confirm">...</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt>Nhận phòng:</dt>
+                                    <dd id="summary-checkin-confirm">...</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt>Trả phòng:</dt>
+                                    <dd id="summary-checkout-confirm">...</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt>Số đêm:</dt>
+                                    <dd id="summary-nights-confirm">...</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt>Số khách:</dt>
+                                    <dd id="summary-guests-confirm">...</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt>Yêu cầu đặc biệt:</dt>
+                                    <dd id="summary-requests-confirm">...</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt>Thanh toán:</dt>
+                                    <dd id="summary-payment-confirm">Thanh toán tại khách sạn</dd>
+                                </div>
+                                <div class="summary-item total">
+                                    <dt>Tổng tiền dự kiến:</dt>
+                                    <dd id="summary-total-price-confirm">...</dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <div class="confirmation-actions">
+                            <a href="index.html" class="btn btn-primary">Về Trang Chủ</a>
+                            <a href="#" onclick="window.print(); return false;" class="btn btn-secondary">In xác nhận</a>
+                        </div>
+                    </div>
+                    -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+     <!-- Footer -->
+     <footer class="footer">
+         <div class="container">
+             <p>© 2024 Khách sạn Hoàng Gia. Bảo lưu mọi quyền.</p>
+         </div>
+     </footer>
+
+    <script src="./js/data.js"></script> <!-- Vẫn cần data.js để dùng formatCurrency, formatDate -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const confirmationContent = document.getElementById('confirmation-content');
+            const loadingMessage = document.getElementById('loading-confirmation');
+            const noBookingInfoMessage = document.getElementById('no-booking-info');
+
+            // --- Lấy dữ liệu từ localStorage ---
+            let bookingDetails = null;
+            try {
+                const storedData = localStorage.getItem('pendingBookingConfirmation');
+                if (storedData) {
+                    bookingDetails = JSON.parse(storedData);
+                    console.log("Retrieved booking details from localStorage:", bookingDetails);
+
+                     // ** QUAN TRỌNG: Xóa khỏi localStorage ngay sau khi lấy thành công **
+                     localStorage.removeItem('pendingBookingConfirmation');
+                     console.log("Removed booking details from localStorage.");
+
+                } else {
+                    console.warn("No booking details found in localStorage.");
+                }
+            } catch (error) {
+                console.error("Error retrieving or parsing booking details from localStorage:", error);
+            }
+
+            // --- Hiển thị nội dung hoặc thông báo lỗi ---
+            if (bookingDetails) {
+                renderConfirmationPage(bookingDetails);
+                loadingMessage.style.display = 'none';
+            } else {
+                 loadingMessage.style.display = 'none';
+                 noBookingInfoMessage.style.display = 'block'; // Hiện thông báo không tìm thấy
+            }
+
+
+            // --- Function to Render Confirmation Page ---
+            function renderConfirmationPage(data) {
+                // Tạo mã đặt phòng giả lập (ví dụ: BK-Timestamp)
+                const bookingCode = `BK-${Date.now().toString().slice(-6)}`; // Lấy 6 số cuối timestamp
+
+                confirmationContent.innerHTML = `
+                    <div class="confirmation-box">
+                        <div class="confirmation-icon"><i class="fas fa-check-circle"></i></div>
+                        <h2>Đặt phòng thành công!</h2>
+                        <p>Cảm ơn bạn, <strong>${data.customerName}</strong>, đã đặt phòng tại Khách sạn Hoàng Gia. Một email xác nhận (chức năng giả lập) sẽ được gửi đến địa chỉ <strong>${data.customerEmail}</strong>.</p>
+                        <p>Vui lòng lưu lại mã đặt phòng của bạn:</p>
+                        <div class="booking-code">Mã đặt phòng: <strong id="booking-code-confirm">${bookingCode}</strong></div>
+
+                        <div class="confirmation-summary">
+                            <h3>Chi tiết đặt phòng</h3>
+                            <dl class="summary-list">
+                                <div class="summary-item">
+                                    <dt>Họ và tên:</dt>
+                                    <dd id="summary-cust-name">${data.customerName}</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt>Số điện thoại:</dt>
+                                    <dd id="summary-cust-phone">${data.customerPhone}</dd>
+                                </div>
+                                <!-- Optional: Email -->
+                                <!-- <div class="summary-item">
+                                    <dt>Email:</dt>
+                                    <dd>${data.customerEmail}</dd>
+                                </div> -->
+                                <hr style="border: none; border-top: 1px dashed #ddd; margin: 15px 0;">
+                                <div class="summary-item">
+                                    <dt>Phòng đã đặt:</dt>
+                                    <dd id="summary-room-details-confirm">
+                                         <strong>Phòng ${data.roomNumber}</strong> (Tầng ${data.roomFloor})<br>
+                                         <small>${data.roomTypeName}</small>
+                                    </dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt><i class="fas fa-calendar-check"></i> Nhận phòng:</dt>
+                                    <dd id="summary-checkin-confirm">${formatDate(data.checkinDate)}</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt><i class="fas fa-calendar-times"></i> Trả phòng:</dt>
+                                    <dd id="summary-checkout-confirm">${formatDate(data.checkoutDate)}</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt><i class="fas fa-moon"></i> Số đêm:</dt>
+                                    <dd id="summary-nights-confirm">${data.nights}</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt><i class="fas fa-users"></i> Số khách:</dt>
+                                    <dd id="summary-guests-confirm">${data.guests}</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt><i class="fas fa-comment-dots"></i> Yêu cầu đặc biệt:</dt>
+                                    <dd id="summary-requests-confirm">${data.specialRequests ? data.specialRequests : '<em>Không có</em>'}</dd>
+                                </div>
+                                <div class="summary-item">
+                                    <dt><i class="fas fa-credit-card"></i> Thanh toán:</dt>
+                                    <dd id="summary-payment-confirm">${data.paymentMethod === 'pay_at_hotel' ? 'Thanh toán tại khách sạn' : 'Khác'}</dd>
+                                </div>
+                                <div class="summary-item total">
+                                    <dt>Tổng tiền dự kiến:</dt>
+                                    <dd id="summary-total-price-confirm">${formatCurrency(data.totalPrice)}</dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <div class="confirmation-actions">
+                            <a href="index.html" class="btn btn-primary"><i class="fas fa-home"></i> Về Trang Chủ</a>
+                            <a href="#" onclick="window.print(); return false;" class="btn btn-secondary"><i class="fas fa-print"></i> In xác nhận</a>
+                        </div>
+                    </div>
+                `;
+            } // End renderConfirmationPage
+
+        }); // End DOMContentLoaded
+    </script>
+</body>
+</html>
