@@ -36,10 +36,10 @@ const roomTypesData = [
         MaxNguoiLon: 2,
         MaxTreEm: 1,
         GiaCoBan: 800000,
-        AnhDaiDienURL: "/images/standard-1.jpg",
+        AnhDaiDienURL: "./images/standard-1.jpg",
         AnhKhac: [
-            "/images/standard-2.jpg",
-            "/images/standard-3.jpg",
+            "./images/standard-2.jpg",
+            "./images/standard-3.jpg",
             
         ],
         TienNghiIDs: [1, 2, 3, 5, 6, 10, 11] // Wifi, AC, TV, Bàn LV, PT riêng, Ấm đun, Máy sấy
@@ -51,11 +51,11 @@ const roomTypesData = [
         MaxNguoiLon: 2,
         MaxTreEm: 2,
         GiaCoBan: 1200000,
-        AnhDaiDienURL: "/images/superior-1.jpg",
+        AnhDaiDienURL: "./images/superior-1.jpg",
         AnhKhac: [
-            "/images/superior-2.jpg",
-            "/images/superior-3.jpg",
-            "/images/superior-4.jpg"
+            "./images/superior-2.jpg",
+            "./images/superior-3.jpg",
+            "./images/superior-4.jpg"
         ],
         TienNghiIDs: [1, 2, 3, 4, 5, 6, 10, 11, 12] // Thêm Tủ lạnh, Két an toàn
     },
@@ -66,11 +66,11 @@ const roomTypesData = [
         MaxNguoiLon: 3,
         MaxTreEm: 2,
         GiaCoBan: 1800000,
-        AnhDaiDienURL: "/images/deluxe-1.jpg",
+        AnhDaiDienURL: "./images/deluxe-1.jpg",
          AnhKhac: [
-            "/images/deluxe-2.jpg",
-            "/images/deluxe-3.jpg",
-            "/images/deluxe-4.jpg"
+            "./images/deluxe-2.jpg",
+            "./images/deluxe-3.jpg",
+            "./images/deluxe-4.jpg"
         ],
         TienNghiIDs: [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12] // Thêm Bồn tắm, Ban công
     },
@@ -81,11 +81,11 @@ const roomTypesData = [
         MaxNguoiLon: 4,
         MaxTreEm: 2,
         GiaCoBan: 3500000,
-        AnhDaiDienURL: "/images/suite-1.jpg",
+        AnhDaiDienURL: "./images/suite-1.jpg",
          AnhKhac: [
-            "/images/suite-2.jpg",
-            "/images/suite-3.jpg",
-            "/images/suite-4.jpg"
+            "./images/suite-2.jpg",
+            "./images/suite-3.jpg",
+            "./images/suite-4.jpg"
         ],
         TienNghiIDs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] // Thêm View biển (nếu có), full tiện nghi
     },

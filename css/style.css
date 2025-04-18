@@ -165,7 +165,7 @@ img.logo-img {
 .hero {
     height: 91vh; /* Chiều cao tương đối */
     min-height: 400px; /* Chiều cao tối thiểu */
-    background: url('/images/hero-bg.jpg') no-repeat center center / cover;
+    background: url('../images/hero-bg.jpg') no-repeat center center / cover;
     background-attachment: fixed;
     position: relative;
     display: flex;
